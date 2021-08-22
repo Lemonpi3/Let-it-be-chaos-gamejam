@@ -6,6 +6,18 @@ public class Player : Charecter
 {
     [SerializeField]
     private GroundCheck groundCheck;
+    [SerializeField]
+    private Transform bulletSpawnpoint;
+
+    public Weapon weapon;
+
+    bool isShooting
+    {
+        get
+        {
+            return Input.GetButton("Fire1");
+        }
+    }
 
     protected override void Start()
     {
@@ -16,6 +28,7 @@ public class Player : Charecter
     {
         direction = new Vector2(Input.GetAxis("Horizontal"), 0);
         isGrounded = groundCheck.isGrounded;
+        animator.SetBool("shooting", isShooting);
     }
 
     protected override void Update()
@@ -33,6 +46,10 @@ public class Player : Charecter
         if (Input.GetAxisRaw("Horizontal") != 0)
         {
             Move(direction);
+        }
+        if (Input.GetButton("Fire1"))
+        {
+            weapon.Shoot(bulletSpawnpoint.position);
         }
     }
 }

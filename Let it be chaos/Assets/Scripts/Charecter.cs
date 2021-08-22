@@ -10,14 +10,12 @@ public abstract class Charecter : MonoBehaviour
     protected int maxHealth = 6;
     [SerializeField]
     protected int currentHealth = 6;
-    [SerializeField]
-    protected float attackSpeed = 1;
 
     protected Vector2 direction;
 
 
     protected Rigidbody2D rb;
-    private Animator animator;
+    protected Animator animator;
 
     public bool isMoveing 
     {
@@ -58,13 +56,48 @@ public abstract class Charecter : MonoBehaviour
         else
             transform.rotation = Quaternion.Euler(0, 180, 0);
     }
+
     public void Move(Vector2 direction)
     {
         rb.velocity = new Vector2(direction.x * speed,rb.velocity.y);
     }
+
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
         Debug.Log(amount);
+    }
+
+    public void UpdateStats()
+    {
+        rb.gravityScale = rb.gravityScale * ChaosManager.PhysicsChaosLevel;
+
+        if(this.tag == "Player")
+        {
+            maxHealth = (int)(maxHealth * ChaosManager.PlayerChaosLevel);
+
+            if(maxHealth <= 0)
+            {
+                maxHealth = 1;
+            }
+
+            if(currentHealth > maxHealth)
+            {
+                currentHealth = maxHealth;
+            }
+
+            speed = speed * ChaosManager.PlayerChaosLevel;
+            jumpForce = jumpForce * ChaosManager.PlayerChaosLevel;
+        }
+        if (this.tag == "Enemy")
+        {
+            maxHealth = (int)(maxHealth * ChaosManager.EnemyChaosLevel);
+            if (currentHealth > maxHealth)
+            {
+                currentHealth = maxHealth;
+            }
+            speed = speed * ChaosManager.EnemyChaosLevel;
+            jumpForce = jumpForce * ChaosManager.EnemyChaosLevel;
+        }
     }
 }

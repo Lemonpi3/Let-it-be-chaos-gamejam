@@ -22,6 +22,7 @@ public class Player : Charecter
     protected override void Start()
     {
         base.Start();
+        animator.SetFloat("attackSpeed", 0.25f / weapon.attackSpeed);
     }
 
     private void FixedUpdate()

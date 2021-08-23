@@ -11,7 +11,7 @@ public abstract class Weapon : MonoBehaviour
     [SerializeField]
     protected int damage = 1;
     [SerializeField]    
-    protected float attackSpeed = 1;
+    public float attackSpeed = 1;
     [SerializeField]
     protected float weaponRange = 5;
     [SerializeField]
@@ -27,6 +27,8 @@ public abstract class Weapon : MonoBehaviour
 
     protected bool isShooting;
     Transform playerTransform;
+    [SerializeField]
+    private Transform bulletParentTransform;
 
     protected void Start()
     {
@@ -40,7 +42,7 @@ public abstract class Weapon : MonoBehaviour
         }
 
         StartCoroutine(Shooting());
-        GameObject _proyectile =Instantiate<GameObject>(proyectile, spawnPos, Quaternion.identity, transform);
+        GameObject _proyectile =Instantiate<GameObject>(proyectile, spawnPos, Quaternion.identity, bulletParentTransform);
         _proyectile.GetComponent<Proyectile>().GetStats(playerTransform.forward,damage, proyectileSpeed,proyectileRadius,weaponRange,explosiveWeapon,explosionRange);
         return true;
     }

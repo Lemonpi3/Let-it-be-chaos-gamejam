@@ -8,7 +8,10 @@ public class Proyectile : MonoBehaviour
 
     protected bool explosive;
     protected float explotionRadius = 1;
-    // public GameObject explotionGO;
+
+    public GameObject explotionGO;
+    public GameObject hitEffect;
+
     bool hasExploded;
 
     protected Vector3 startPos;
@@ -26,40 +29,41 @@ public class Proyectile : MonoBehaviour
         Debug.Log(direction);
     }
 
-    protected virtual void Update()
+    protected virtual void FixedUpdate()
     {
         float distance = Vector3.Distance(startPos, transform.position);
         if (distance >= maxRange)
         {
-            Explode();
-            Destroy(gameObject);
+            Hit();
         }
     }
 
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
-        Explode();
+        if(collision.tag == "Proyectile")
+        {
+            return;
+        }
+        Hit();
         if (collision.tag == "Player" || collision.tag == "Enemy")
         {
             collision.gameObject.GetComponent<Charecter>().TakeDamage(damage);
         }
-        Destroy(gameObject);
     }
 
-    protected virtual void Explode()
+    protected virtual void Hit()
     {
         if (explosive)
         {
-            if (!hasExploded)
-            {
-                animator.SetBool("Explosive", explosive);
-                transform.localScale *= explotionRadius;
-                hasExploded = true;
-            }
+            GameObject explotion = Instantiate<GameObject>(explotionGO, transform.position, Quaternion.identity);
+            explotion.GetComponent<Explotion>().Explode(explotionRadius, damage);
             Destroy(gameObject);
-            return;
         }
-        animator.SetBool("Hit", true);
+        else
+        {
+            Instantiate(hitEffect, transform.position, Quaternion.identity);
+            Destroy(gameObject);
+        }
     }
 
     public void GetStats(Vector2 _direction,int _damage = 1,float _speed = 10,float _proyectileRadius =1,float _maxRange =5,bool _explosive = false,float _explotionRadius =1)

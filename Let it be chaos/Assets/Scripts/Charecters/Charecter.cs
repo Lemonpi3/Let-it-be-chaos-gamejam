@@ -65,7 +65,7 @@ public abstract class Charecter : MonoBehaviour
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
-        Debug.Log(amount);
+        Debug.Log(gameObject.name+" took "+ amount + "damage");
     }
 
     public void UpdateStats()

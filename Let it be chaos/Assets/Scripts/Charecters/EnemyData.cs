@@ -4,6 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName ="New Enemy",menuName ="New Charecter/New Enemy")]
 public class EnemyData : ScriptableObject
 {
+    [Header("Grafics")]
     [SerializeField]
     private string _enemyName;
     public string enemyName { get => _enemyName; }
@@ -20,6 +21,7 @@ public class EnemyData : ScriptableObject
     private EnemySize _enemySize;
     public EnemySize enemySize{ get => _enemySize; }
 
+    [Header("Enemy Stats")]
     [SerializeField]
     private TypeOfAttack _typeOfAttack;
     public TypeOfAttack typeOfAttack { get => _typeOfAttack; }
@@ -43,6 +45,15 @@ public class EnemyData : ScriptableObject
     [SerializeField]
     private float _attackSpeed = 1;
     public float attackSpeed { get => _attackSpeed; }
+
+    [Header("Suicidal & Ranged Attack settings")]
+    [SerializeField]
+    private GameObject _specialAttack;
+    public GameObject specialAttack { get => _specialAttack; }
+
+    [SerializeField]
+    private float _specialRadius = 10f;
+    public float specialRadius { get => _specialRadius; }
 }
 public enum EnemySize { Small,Medium,Big}
 public enum TypeOfAttack { Melee,Melee_Suicidal,Range_Proyectile,Range_Beam}

@@ -18,10 +18,30 @@ public class Enemy : Charecter
     private float attackSpeed;
     [SerializeField]
     private EnemySize enemySize;
+    [Header("Suicidal & Ranged settings")]
+    [SerializeField]
+    private GameObject specialAttack; //proyectile,beam,expltion
+    [SerializeField]
+    private float specialRadius;
+    [SerializeField]
+    private Transform specialSpawn;
+    [SerializeField]
+    private GameObject enemyWeapon;
+    private Weapon enemyWeaponScript;
 
-    float timer = 0;
-
+    private float timer = 0;
+    private Charecter target;
     EnemyAI enemyAI;
+
+    private void Awake()
+    {
+        if (enemyData == null)
+        {
+            Debug.Log("No enemyData found in: " + gameObject.name);
+            Destroy(gameObject);
+        }
+    }
+
     protected override void Start()
     {
         base.Start();
@@ -30,6 +50,8 @@ public class Enemy : Charecter
         SetStats();
         enemyAI = GetComponent<EnemyAI>();
         enemyAI.GetEnemyStats(speed, jumpForce,attackRange);
+        target = enemyAI.target.gameObject.GetComponent<Charecter>();
+        
     }
     
     protected override void Update()
@@ -43,8 +65,10 @@ public class Enemy : Charecter
         attackRange = enemyData.attackRange;
         attackSpeed = enemyData.attackSpeed;
         enemySize = enemyData.enemySize;
-
-        switch (enemyData.enemySize)
+        specialRadius = enemyData.specialRadius;
+        specialAttack = enemyData.specialAttack;
+       
+        switch (enemySize)
         {
             case EnemySize.Small:
                 maxHealth = ChaosManager.smallEnemyHealth;
@@ -63,6 +87,17 @@ public class Enemy : Charecter
                 damage = ChaosManager.bigEnemyDamage;
                 transform.localScale *= 2f;
                 break;
+        }
+        if (specialAttack != null)
+        {
+            if (specialAttack.gameObject.tag == "Weapon")
+            {
+                enemyWeapon = Instantiate(specialAttack, transform.position, Quaternion.identity, transform);
+                Debug.Log(enemyWeapon);
+                enemyWeaponScript = enemyWeapon.GetComponent<Weapon>();
+                enemyWeaponScript.attackSpeed = attackSpeed;
+                enemyWeaponScript.SetWeaponStats(damage, attackSpeed, attackRange);
+            }
         }
     }
 
@@ -87,10 +122,15 @@ public class Enemy : Charecter
         switch (typeOfAttack)
         {
             case TypeOfAttack.Melee:
+                target.TakeDamage(damage);
                 break;
             case TypeOfAttack.Melee_Suicidal:
+                GameObject explotion = Instantiate<GameObject>(specialAttack, transform.position, Quaternion.identity);
+                explotion.GetComponent<Explotion>().Explode(specialRadius, damage);
+                Destroy(gameObject);
                 break;
             case TypeOfAttack.Range_Proyectile:
+                enemyWeaponScript.Shoot(specialSpawn);
                 break;
             case TypeOfAttack.Range_Beam:
                 break;

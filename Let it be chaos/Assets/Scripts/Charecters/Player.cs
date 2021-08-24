@@ -50,7 +50,7 @@ public class Player : Charecter
         }
         if (Input.GetButton("Fire1"))
         {
-            weapon.Shoot(bulletSpawnpoint.position);
+            weapon.Shoot(bulletSpawnpoint);
         }
     }
 }

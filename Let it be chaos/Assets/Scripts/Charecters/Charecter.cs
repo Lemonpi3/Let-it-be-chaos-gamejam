@@ -78,8 +78,13 @@ public abstract class Charecter : MonoBehaviour
         Debug.Log(gameObject.name+" took "+ amount + "damage");
         if(currentHealth <= 0)
         {
-            Destroy(gameObject);
+            Die();
         }
+    }
+
+    public virtual void Die()
+    {
+        Destroy(gameObject);
     }
 
     public void UpdateStats()

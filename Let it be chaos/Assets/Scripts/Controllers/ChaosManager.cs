@@ -66,30 +66,53 @@ public class ChaosManager : MonoBehaviour
 
     [Header("Chaos Settings")]
     [SerializeField]
-    private static int chaosLevel = 1;
+    private int chaosLevel = 1;
+    [SerializeField]
+    private int defaultChaosLevel = 1;
+    [SerializeField]
+    private int defaultEnemyChaosLevel = 1;
+    [SerializeField]
+    private int defaultPlayerChaosLevel = 1;
+    [SerializeField]
+    private int defaultWeaponChaosLevel = 1;
+    [SerializeField]
+    private int defaultPhysicsChaosLevel = 1;
 
-    public int currentChaosLevel { get => chaosLevel; }
+    public static int _chaosLevel =>instance.chaosLevel;
 
-    [SerializeField]
-    public static float EnemyChaosLevel = 1;
-    [SerializeField]
-    public static float PlayerChaosLevel = 1;
-    [SerializeField]
-    public static float WeaponChaosLevel = 1;
-    [SerializeField]
-    public static float PhysicsChaosLevel = 1;
+    public static float EnemyChaosLevel;
+    public static float PlayerChaosLevel;
+    public static float WeaponChaosLevel;
+    public static float PhysicsChaosLevel;
 
-    public static void RandomizeChaos()
+    private void Start()
     {
-        EnemyChaosLevel = Random.Range(0, chaosLevel);
-        PlayerChaosLevel = Random.Range(0, chaosLevel);
-        WeaponChaosLevel = Random.Range(0, chaosLevel);
-        PhysicsChaosLevel = Random.Range(0, chaosLevel);
+        EnemyChaosLevel = defaultEnemyChaosLevel;
+        PlayerChaosLevel = defaultPlayerChaosLevel;
+        PhysicsChaosLevel = defaultPhysicsChaosLevel;
+        WeaponChaosLevel = defaultWeaponChaosLevel;
     }
 
-    public static void IncreaseChaos(int amount)
+    public void RandomizeChaos()
     {
-        chaosLevel += amount;
+        EnemyChaosLevel = Random.Range(-_chaosLevel, _chaosLevel);
+        PlayerChaosLevel = Random.Range(-_chaosLevel, _chaosLevel);
+        WeaponChaosLevel = Random.Range(-_chaosLevel, _chaosLevel);
+        PhysicsChaosLevel = Random.Range(-_chaosLevel, _chaosLevel);
+    }
+
+    public void modifyChaosLevel(int amount)
+    {
+        instance.chaosLevel += amount;
         RandomizeChaos();
+    }
+
+    public void ResetChaos()
+    {
+        chaosLevel = defaultChaosLevel;
+        EnemyChaosLevel = defaultEnemyChaosLevel;
+        PlayerChaosLevel = defaultPlayerChaosLevel;
+        WeaponChaosLevel = defaultWeaponChaosLevel;
+        PhysicsChaosLevel = defaultPhysicsChaosLevel;
     }
 }

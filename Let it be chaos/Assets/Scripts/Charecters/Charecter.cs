@@ -2,18 +2,29 @@ using UnityEngine;
 
 public abstract class Charecter : MonoBehaviour
 {
+    [SerializeField,Range(0,1)]
+    protected float chaosResistance = 0;
+
+    [Header("Default Stats")]
     [SerializeField]
-    protected float speed = 1;
+    protected float defaultGravityScale;
+    [SerializeField]
+    protected float defaultJumpForce;
+    [SerializeField]
+    protected float defaultSpeed;
+    [SerializeField]
+    protected int defaultMaxHealth;
+    [SerializeField]
+    [Header("Current Stats")]
+    protected float speed = 10;
     [SerializeField]
     protected float jumpForce = 5f;
     [SerializeField]
-    protected int maxHealth = 6;
+    protected int currentHealth;
     [SerializeField]
-    protected int currentHealth = 6;
+    protected int maxHealth = 6;
 
     protected Vector2 direction;
-
-
     protected Rigidbody2D rb;
     protected Animator animator;
 
@@ -30,6 +41,8 @@ public abstract class Charecter : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        SetCharecterDefaultStats();
+        UpdateStats();
     }
   
     protected virtual void Update()
@@ -37,14 +50,11 @@ public abstract class Charecter : MonoBehaviour
         AnimateMovement(direction);
     }
 
-    private void FixedUpdate()
-    {
-    }
-
     public virtual void AnimateMovement(Vector2 direction)
     {
         animator.SetBool("walking",isMoveing);
         animator.SetBool("jumping",!isGrounded);
+
         if (direction.x > 0)
         {
             transform.rotation = Quaternion.Euler(0, 0, 0);
@@ -66,11 +76,15 @@ public abstract class Charecter : MonoBehaviour
     {
         currentHealth -= amount;
         Debug.Log(gameObject.name+" took "+ amount + "damage");
+        if(currentHealth <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void UpdateStats()
     {
-        rb.gravityScale = rb.gravityScale * ChaosManager.PhysicsChaosLevel;
+        ApplyChaos_Physics();
 
         if(this.tag == "Player")
         {
@@ -98,6 +112,33 @@ public abstract class Charecter : MonoBehaviour
             }
             speed = speed * ChaosManager.EnemyChaosLevel;
             jumpForce = jumpForce * ChaosManager.EnemyChaosLevel;
+        }
+    }
+
+    private void SetCharecterDefaultStats()
+    {
+        rb.gravityScale = defaultGravityScale;
+        maxHealth = defaultMaxHealth;
+        currentHealth = maxHealth;
+        jumpForce = defaultJumpForce;
+        speed = defaultSpeed;
+    }
+
+    public void ApplyChaos_Physics()
+    {
+        rb.gravityScale *= (ChaosManager.PhysicsChaosLevel-(ChaosManager.PhysicsChaosLevel * chaosResistance));
+
+        if(rb.gravityScale == 0)
+        {
+            rb.gravityScale = defaultGravityScale;
+        } else
+        if(rb.gravityScale < 0)
+        {
+            transform.rotation = Quaternion.Euler(180, 0, 0);
+        } else
+        if (rb.gravityScale > 0)
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
         }
     }
 }

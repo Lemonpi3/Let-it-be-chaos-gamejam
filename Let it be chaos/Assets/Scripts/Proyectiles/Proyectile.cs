@@ -26,7 +26,6 @@ public class Proyectile : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         startPos = transform.position;
         rb.velocity = speed * direction;
-        Debug.Log(direction);
     }
 
     protected virtual void FixedUpdate()

@@ -39,7 +39,7 @@ public class Proyectile : MonoBehaviour
 
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Proyectile")
+        if(collision.tag == "Proyectile" || collision.tag == "UI")
         {
             return;
         }

@@ -48,6 +48,7 @@ public class Enemy : Charecter
         animator.runtimeAnimatorController = enemyData.animatorController;
         gameObject.name = enemyData.enemyName;
         SetStats();
+        currentHealth = maxHealth;
         enemyAI = GetComponent<EnemyAI>();
         enemyAI.GetEnemyStats(speed, jumpForce,attackRange);
         target = enemyAI.target.gameObject.GetComponent<Charecter>();
@@ -79,13 +80,13 @@ public class Enemy : Charecter
                 maxHealth = ChaosManager.medEnemyHealth;
                 speed = ChaosManager.medEnemySpeed;
                 damage = ChaosManager.medEnemyDamage;
-                transform.localScale *= 1.5f;
+                transform.localScale = Vector3.one * 1.5f;
                 break;
             case EnemySize.Big:
                 maxHealth = ChaosManager.bigEnemyHealth;
                 speed = ChaosManager.bigEnemySpeed;
                 damage = ChaosManager.bigEnemyDamage;
-                transform.localScale *= 2f;
+                transform.localScale =Vector3.one * 2f;
                 break;
         }
         if (specialAttack != null)
@@ -99,6 +100,7 @@ public class Enemy : Charecter
                 enemyWeaponScript.SetWeaponStats(damage, attackSpeed, attackRange);
             }
         }
+
     }
 
     public void GetDirection(Vector2 _direction)

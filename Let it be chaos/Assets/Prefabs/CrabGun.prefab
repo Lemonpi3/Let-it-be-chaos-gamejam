@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 395830263381437001}
   - component: {fileID: 395830263381437002}
   m_Layer: 6
-  m_Name: NormalGun
+  m_Name: CrabGun
   m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: NormalGun
   damage: 1
-  attackSpeed: 0.25
+  attackSpeed: 1
   weaponRange: 5
   proyectileSpeed: 25
   proyectileRadius: 1

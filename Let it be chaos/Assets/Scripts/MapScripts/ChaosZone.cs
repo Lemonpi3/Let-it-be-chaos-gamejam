@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class ChaosZone : MonoBehaviour
 {
-    [SerializeField]
-    private float ChaosUpdateIntervall = 30;
     public BoxCollider2D boxCollider2D;
 
     void Start()
     {
-        InvokeRepeating("UpdateChaos", 0, ChaosUpdateIntervall);
+        InvokeRepeating("UpdateChaos", 0, ChaosManager._chaosUpdateInterval);
         boxCollider2D = GetComponent<BoxCollider2D>();
     }
 
@@ -25,9 +23,7 @@ public class ChaosZone : MonoBehaviour
 
     public void UpdateChaos()
     {
-        ChaosManager.instance.RandomizeChaos();
         boxCollider2D.enabled = false;
-        Debug.Log("Updated chaoszone");
         boxCollider2D.enabled = true;
     }
 

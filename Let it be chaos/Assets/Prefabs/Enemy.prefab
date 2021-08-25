@@ -83,7 +83,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc78925d8651f2c49a5b47aa8c1db582, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  target: {fileID: 6239630900837606510, guid: ba56316c1011df744a8e28dd6526307d, type: 3}
   activateDistance: 11.65
   pathfinderUpdateSeconds: 0.2
   jumpCd: 1

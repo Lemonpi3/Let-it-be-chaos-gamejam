@@ -72,6 +72,9 @@ public class ChaosManager : MonoBehaviour
     [SerializeField]
     private int defaultChaosLevel = 1;
     [SerializeField]
+    private float ChaosUpdateInterval = 30;
+
+    [SerializeField]
     private int defaultEnemyChaosLevel = 1;
     [SerializeField]
     private int defaultPlayerChaosLevel = 1;
@@ -82,7 +85,7 @@ public class ChaosManager : MonoBehaviour
 
     public static int _chaosLevel =>instance.chaosLevelCurrent;
     public static int _chaosLevelMax => instance.chaosLevelMax;
-
+    public static float _chaosUpdateInterval => instance.ChaosUpdateInterval;
     public static float EnemyChaosLevel;
     public static float PlayerChaosLevel;
     public static float WeaponChaosLevel;
@@ -94,7 +97,7 @@ public class ChaosManager : MonoBehaviour
         PlayerChaosLevel = defaultPlayerChaosLevel;
         PhysicsChaosLevel = defaultPhysicsChaosLevel;
         WeaponChaosLevel = defaultWeaponChaosLevel;
-  
+        InvokeRepeating("RandomizeChaos", 0, ChaosUpdateInterval);
     }
 
     public void RandomizeChaos()

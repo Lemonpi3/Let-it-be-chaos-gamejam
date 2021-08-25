@@ -27,7 +27,7 @@ public abstract class Weapon : MonoBehaviour
     [SerializeField]
     protected float proyectileGravityScale = 0;
 
-    protected float defaultDmg;
+    protected int defaultDmg;
     protected float defaultAttackSpeed;
     protected float defaultGravityScale;
 
@@ -70,6 +70,11 @@ public abstract class Weapon : MonoBehaviour
         yield return new WaitForSeconds(attackSpeed);
         isShooting = false;
     }
+    public void StopShooting()
+    {
+        StopCoroutine(Shooting());
+        isShooting = false;
+    }
     public void SetWeaponStats(int _damage, float _attackSpeed, float _range,bool isExplosive = false,float _explotionRange = 1, float _proyectileSpeed = 10, float _proyectileRadius = 1)
     {
         damage = _damage;
@@ -85,7 +90,7 @@ public abstract class Weapon : MonoBehaviour
     {
         float chaos = (ChaosManager.WeaponChaosLevel - (ChaosManager.WeaponChaosLevel * chaosResistance));
         damage *= (int)chaos;
-        if(damage <= 0)
+        if(chaos <= 1)
         {
             damage = 1;
         }
@@ -95,11 +100,12 @@ public abstract class Weapon : MonoBehaviour
             attackSpeed = 0.1f;
         }
         proyectileGravityScale = 1 * chaos;
+        Debug.Log(damage);
     }
 
     public void ResetStats()
     {
-        damage =(int)defaultDmg;
+        damage =defaultDmg;
         attackSpeed = defaultAttackSpeed;
         proyectileGravityScale = defaultGravityScale;
     }

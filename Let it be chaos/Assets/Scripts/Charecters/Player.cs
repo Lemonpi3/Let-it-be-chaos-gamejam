@@ -8,6 +8,8 @@ public class Player : Charecter
     private GroundCheck groundCheck;
     [SerializeField]
     private Transform bulletSpawnpoint;
+    [SerializeField]
+    private Transform checkPoint;
 
     public Weapon[] weapon;
     [SerializeField]
@@ -66,6 +68,7 @@ public class Player : Charecter
         }
         if (Input.GetButtonDown("Fire2"))
         {
+            weapon[currentWeapon].StopShooting();
             SwapWeapon();
         }
     }
@@ -118,9 +121,18 @@ public class Player : Charecter
         for (int i = 0; i < weapon.Length; i++)
         {
             weapon[i].ResetStats();
+            if(i != currentWeapon)
+            {
+                weapon[i].gameObject.SetActive(false);
+            }
         }
 
         base.SetCharecterDefaultStats();
         UpdateStatusBars();
+    }
+    public override void Die()
+    {
+        transform.position = checkPoint.position;
+        Start();
     }
 }

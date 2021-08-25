@@ -239,6 +239,7 @@ MonoBehaviour:
   - {fileID: 6046604465272145005}
   hpBar: {fileID: 0}
   chaosBar: {fileID: 0}
+  maxHpBar: {fileID: 0}
 --- !u!50 &6239630900837606504
 Rigidbody2D:
   serializedVersion: 4

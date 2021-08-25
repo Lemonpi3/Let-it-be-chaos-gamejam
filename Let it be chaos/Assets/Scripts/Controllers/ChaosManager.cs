@@ -21,7 +21,7 @@ public class ChaosManager : MonoBehaviour
     #endregion
 
     //GeneralGameSettings
-    
+
     //Enemy Stats
     [Header("Enemy Health")]
     [SerializeField]
@@ -66,7 +66,9 @@ public class ChaosManager : MonoBehaviour
 
     [Header("Chaos Settings")]
     [SerializeField]
-    private int chaosLevel = 1;
+    private int chaosLevelCurrent = 1;
+    [SerializeField]
+    private int chaosLevelMax = 10;
     [SerializeField]
     private int defaultChaosLevel = 1;
     [SerializeField]
@@ -78,7 +80,8 @@ public class ChaosManager : MonoBehaviour
     [SerializeField]
     private int defaultPhysicsChaosLevel = 1;
 
-    public static int _chaosLevel =>instance.chaosLevel;
+    public static int _chaosLevel =>instance.chaosLevelCurrent;
+    public static int _chaosLevelMax => instance.chaosLevelMax;
 
     public static float EnemyChaosLevel;
     public static float PlayerChaosLevel;
@@ -91,6 +94,7 @@ public class ChaosManager : MonoBehaviour
         PlayerChaosLevel = defaultPlayerChaosLevel;
         PhysicsChaosLevel = defaultPhysicsChaosLevel;
         WeaponChaosLevel = defaultWeaponChaosLevel;
+  
     }
 
     public void RandomizeChaos()
@@ -103,13 +107,13 @@ public class ChaosManager : MonoBehaviour
 
     public void modifyChaosLevel(int amount)
     {
-        instance.chaosLevel += amount;
+        instance.chaosLevelCurrent += amount;
         RandomizeChaos();
     }
 
     public void ResetChaos()
     {
-        chaosLevel = defaultChaosLevel;
+        chaosLevelCurrent = defaultChaosLevel;
         EnemyChaosLevel = defaultEnemyChaosLevel;
         PlayerChaosLevel = defaultPlayerChaosLevel;
         WeaponChaosLevel = defaultWeaponChaosLevel;

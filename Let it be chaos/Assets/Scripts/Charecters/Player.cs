@@ -9,7 +9,17 @@ public class Player : Charecter
     [SerializeField]
     private Transform bulletSpawnpoint;
 
-    public Weapon weapon;
+    public Weapon[] weapon;
+    [SerializeField]
+    private StatusBar hpBar;
+    [SerializeField]
+    private StatusBar chaosBar;
+    [SerializeField]
+    private StatusBar maxHpBar;
+
+    private int currentWeapon = 0;
+
+    public float _chaosResistance { get => chaosResistance; }
 
     bool isShooting
     {
@@ -22,7 +32,8 @@ public class Player : Charecter
     protected override void Start()
     {
         base.Start();
-        animator.SetFloat("attackSpeed", 0.25f / weapon.attackSpeed);
+        UpdateStatusBars();
+        animator.SetFloat("attackSpeed", 0.25f / weapon[currentWeapon].attackSpeed);
     }
 
     private void FixedUpdate()
@@ -36,6 +47,7 @@ public class Player : Charecter
     {
         Inputs();
         base.Update();
+        
     }
 
     private void Inputs()
@@ -50,7 +62,65 @@ public class Player : Charecter
         }
         if (Input.GetButton("Fire1"))
         {
-            weapon.Shoot(bulletSpawnpoint);
+            weapon[currentWeapon].Shoot(bulletSpawnpoint);
         }
+        if (Input.GetButtonDown("Fire2"))
+        {
+            SwapWeapon();
+        }
+    }
+
+    private void SwapWeapon()
+    {
+        weapon[currentWeapon].gameObject.SetActive(false);
+        currentWeapon += 1;
+        if(currentWeapon >= weapon.Length)
+        {
+            currentWeapon = 0;
+        }
+        weapon[currentWeapon].gameObject.SetActive(true);
+    }
+
+    public override void TakeDamage(int amount)
+    {
+        base.TakeDamage(amount);
+        UpdateStatusBars();
+    }
+
+    public void UpdateStatusBars()
+    {
+        hpBar.UpdateBar(maxHealth, currentHealth);
+        chaosBar.UpdateBar(ChaosManager._chaosLevelMax,(ChaosManager._chaosLevel - (ChaosManager._chaosLevel * chaosResistance)));
+        maxHpBar.UpdateBar(defaultMaxHealth, maxHealth, true);
+    }
+
+    public override void UpdateStats()
+    {
+        float chaos = (ChaosManager.PlayerChaosLevel - (ChaosManager.PlayerChaosLevel * chaosResistance));
+        maxHealth *= (int)chaos;
+        speed *= chaos;
+        if(speed == 0)
+        {
+            speed = 1;
+        }
+        jumpForce *= chaos;
+        for (int i = 0; i < weapon.Length; i++)
+        {
+            weapon[i].UpdateChaos(chaosResistance);
+        }
+        base.UpdateStats();
+        SetCharecterDefaultStats();
+        UpdateStatusBars();
+    }
+
+    public override void SetCharecterDefaultStats()
+    {
+        for (int i = 0; i < weapon.Length; i++)
+        {
+            weapon[i].ResetStats();
+        }
+
+        base.SetCharecterDefaultStats();
+        UpdateStatusBars();
     }
 }

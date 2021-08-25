@@ -136,5 +136,23 @@ public class Enemy : Charecter
                 break;
         }
     }
-   
+    public override void UpdateStats()
+    {
+        float chaos = (ChaosManager.EnemyChaosLevel - (ChaosManager.EnemyChaosLevel * chaosResistance));
+        maxHealth *= (int)Mathf.Abs(chaos);
+        speed *= chaos;
+        jumpForce *= chaos ;
+        damage *= (int)Mathf.Abs(chaos);
+        
+        if(enemyWeaponScript != null)
+        {
+            enemyWeaponScript.UpdateChaos();
+        }
+        base.UpdateStats();
+    }
+
+    public override void SetCharecterDefaultStats()
+    {
+        SetStats();
+    }
 }

@@ -65,7 +65,7 @@ public class Proyectile : MonoBehaviour
         }
     }
 
-    public void GetStats(Vector2 _direction,int _damage = 1,float _speed = 10,float _proyectileRadius =1,float _maxRange =5,bool _explosive = false,float _explotionRadius =1)
+    public void GetStats(Vector2 _direction,int _damage = 1,float _speed = 10,float _proyectileRadius =1,float _maxRange =5,bool _explosive = false,float _explotionRadius =1,float gravityScale = 0)
     {
         damage = _damage;
         speed = _speed;

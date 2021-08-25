@@ -41,7 +41,6 @@ public abstract class Charecter : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-        SetCharecterDefaultStats();
         UpdateStats();
     }
   
@@ -72,7 +71,7 @@ public abstract class Charecter : MonoBehaviour
         rb.velocity = new Vector2(direction.x * speed,rb.velocity.y);
     }
 
-    public void TakeDamage(int amount)
+    public virtual void TakeDamage(int amount)
     {
         currentHealth -= amount;
         Debug.Log(gameObject.name+" took "+ amount + "damage");
@@ -87,40 +86,20 @@ public abstract class Charecter : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void UpdateStats()
+    public virtual void UpdateStats()
     {
         ApplyChaos_Physics();
-
-        if(this.tag == "Player")
+        if (maxHealth <= 0)
         {
-            maxHealth = (int)(maxHealth * ChaosManager.PlayerChaosLevel);
-
-            if(maxHealth <= 0)
-            {
-                maxHealth = 1;
-            }
-
-            if(currentHealth > maxHealth)
-            {
-                currentHealth = maxHealth;
-            }
-
-            speed = speed * ChaosManager.PlayerChaosLevel;
-            jumpForce = jumpForce * ChaosManager.PlayerChaosLevel;
+            maxHealth = 1;
         }
-        if (this.tag == "Enemy")
+        if (currentHealth > maxHealth)
         {
-            maxHealth = (int)(maxHealth * ChaosManager.EnemyChaosLevel);
-            if (currentHealth > maxHealth)
-            {
-                currentHealth = maxHealth;
-            }
-            speed = speed * ChaosManager.EnemyChaosLevel;
-            jumpForce = jumpForce * ChaosManager.EnemyChaosLevel;
+            currentHealth = maxHealth;
         }
     }
 
-    private void SetCharecterDefaultStats()
+    public virtual void SetCharecterDefaultStats()
     {
         rb.gravityScale = defaultGravityScale;
         maxHealth = defaultMaxHealth;

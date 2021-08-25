@@ -24,6 +24,12 @@ public abstract class Weapon : MonoBehaviour
     protected float explosionRange = 1;
     [SerializeField]
     protected GameObject proyectile;
+    [SerializeField]
+    protected float proyectileGravityScale = 0;
+
+    protected float defaultDmg;
+    protected float defaultAttackSpeed;
+    protected float defaultGravityScale;
 
     protected bool isShooting;
     Transform playerTransform;
@@ -34,6 +40,9 @@ public abstract class Weapon : MonoBehaviour
     protected void Start()
     {
         playerTransform = gameObject.GetComponentInParent<Transform>();
+        defaultDmg = damage;
+        defaultGravityScale = proyectileGravityScale;
+        defaultAttackSpeed = attackSpeed;
     }
     public bool Shoot(Transform spawnPos, Vector2 direction = new Vector2())
     {
@@ -46,15 +55,13 @@ public abstract class Weapon : MonoBehaviour
         {
             shootDir = spawnPos.forward;
         }
-
         if (isShooting)
         {
             return false;
         }
-
         StartCoroutine(Shooting());
-        GameObject _proyectile =Instantiate<GameObject>(proyectile, spawnPos.position, Quaternion.identity, bulletParentTransform);
-        _proyectile.GetComponent<Proyectile>().GetStats(shootDir,damage, proyectileSpeed,proyectileRadius,weaponRange,explosiveWeapon,explosionRange);
+        SpawnBullet(shootDir, spawnPos);
+
         return true;
     }
     protected IEnumerator Shooting()
@@ -72,5 +79,34 @@ public abstract class Weapon : MonoBehaviour
         proyectileSpeed = _proyectileSpeed;
         proyectileRadius = _proyectileRadius;
         explosiveWeapon = isExplosive;
+    }
+
+    public void UpdateChaos(float chaosResistance = 0)
+    {
+        float chaos = (ChaosManager.WeaponChaosLevel - (ChaosManager.WeaponChaosLevel * chaosResistance));
+        damage *= (int)chaos;
+        if(damage <= 0)
+        {
+            damage = 1;
+        }
+        attackSpeed *= chaos;
+        if(attackSpeed <= 0.1f)
+        {
+            attackSpeed = 0.1f;
+        }
+        proyectileGravityScale = 1 * chaos;
+    }
+
+    public void ResetStats()
+    {
+        damage =(int)defaultDmg;
+        attackSpeed = defaultAttackSpeed;
+        proyectileGravityScale = defaultGravityScale;
+    }
+
+    public virtual void SpawnBullet(Vector2 shootDir,Transform spawnPos)
+    {
+        GameObject _proyectile = Instantiate<GameObject>(proyectile, spawnPos.position, Quaternion.identity, bulletParentTransform);
+        _proyectile.GetComponent<Proyectile>().GetStats(shootDir, damage, proyectileSpeed, proyectileRadius, weaponRange, explosiveWeapon, explosionRange, proyectileGravityScale);
     }
 }

@@ -61,7 +61,7 @@ MonoBehaviour:
   currentHealth: 0
   maxHealth: 6
   isGrounded: 1
-  enemyData: {fileID: 0}
+  enemyData: {fileID: 11400000, guid: c6e124b3932a7174ebdcf7d7601685e2, type: 2}
   damage: 1
   typeOfAttack: 0
   attackRange: 0
@@ -84,7 +84,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  activateDistance: 6.18
+  activateDistance: 11.65
   pathfinderUpdateSeconds: 0.2
   jumpCd: 1
   nextWaypointDistance: 3

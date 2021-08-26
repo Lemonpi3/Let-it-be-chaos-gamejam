@@ -142,8 +142,8 @@ public class Enemy : Charecter
     {
         float chaos = (ChaosManager.EnemyChaosLevel - (ChaosManager.EnemyChaosLevel * chaosResistance));
         maxHealth *= (int)Mathf.Abs(chaos);
-        speed *= chaos;
-        jumpForce *= chaos ;
+        speed = Mathf.Abs(speed *= chaos);
+        jumpForce = defaultGravityScale;
         damage *= (int)Mathf.Abs(chaos);
         
         if(enemyWeaponScript != null)

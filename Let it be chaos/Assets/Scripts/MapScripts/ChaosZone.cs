@@ -8,7 +8,7 @@ public class ChaosZone : MonoBehaviour
 
     void Start()
     {
-        InvokeRepeating("UpdateChaos", 0, ChaosManager._chaosUpdateInterval);
+        InvokeRepeating("UpdateChaos", 0, 2);
         boxCollider2D = GetComponent<BoxCollider2D>();
     }
 
@@ -21,12 +21,15 @@ public class ChaosZone : MonoBehaviour
         }
     }
 
-    public void UpdateChaos()
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        boxCollider2D.enabled = false;
-        boxCollider2D.enabled = true;
+        if (collision.tag == "Enemy" || collision.tag == "Player")
+        {
+            collision.GetComponent<Charecter>().UpdateStats();
+            Debug.Log("Updated " + collision.name);
+        }
     }
-
+    
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.tag == "Enemy" || collision.tag == "Player")

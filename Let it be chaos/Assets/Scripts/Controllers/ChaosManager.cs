@@ -21,10 +21,9 @@ public class ChaosManager : MonoBehaviour
     #endregion
 
     //GeneralGameSettings
-
-    //Enemy Stats
     [Header("Enemy Health")]
-    [SerializeField]
+    //Enemy Stats                  //Inspector was showing this headers inversed
+    [SerializeField, Header("Enemy Stats")]
     private int baseEnemyHealth = 10;
     [SerializeField]
     private int smallHealthScaling = 1;
@@ -65,15 +64,18 @@ public class ChaosManager : MonoBehaviour
 
 
     [Header("Chaos Settings")]
+
     [SerializeField]
     private int chaosLevelCurrent = 1;
     [SerializeField]
-    private int chaosLevelMax = 10;
-    [SerializeField]
-    private int defaultChaosLevel = 1;
+    private int chaosLevelMax = 100;
     [SerializeField]
     private float ChaosUpdateInterval = 30;
 
+    [Header("Default values")]
+    
+    [SerializeField]
+    private int defaultChaosLevel = 1;
     [SerializeField]
     private int defaultEnemyChaosLevel = 1;
     [SerializeField]
@@ -82,6 +84,17 @@ public class ChaosManager : MonoBehaviour
     private int defaultWeaponChaosLevel = 1;
     [SerializeField]
     private int defaultPhysicsChaosLevel = 1;
+
+    [Header("General Chaos Scaling")]
+
+    [Range(0, 1), SerializeField]
+    private float chaosScalingPlayer=1;
+    [Range(0, 1), SerializeField]
+    private float chaosScalingPhysics=1;
+    [Range(0, 1), SerializeField]
+    private float chaosScalingEnemies=1;
+    [Range(0, 1), SerializeField]
+    private float chaosScalingWeapons=1;
 
     public static int _chaosLevel =>instance.chaosLevelCurrent;
     public static int _chaosLevelMax => instance.chaosLevelMax;
@@ -97,15 +110,21 @@ public class ChaosManager : MonoBehaviour
         PlayerChaosLevel = defaultPlayerChaosLevel;
         PhysicsChaosLevel = defaultPhysicsChaosLevel;
         WeaponChaosLevel = defaultWeaponChaosLevel;
+        EnemyChaosLevel = defaultEnemyChaosLevel;
         InvokeRepeating("RandomizeChaos", 0, ChaosUpdateInterval);
     }
 
     public void RandomizeChaos()
     {
-        EnemyChaosLevel = Random.Range(-_chaosLevel, _chaosLevel);
-        PlayerChaosLevel = Random.Range(-_chaosLevel, _chaosLevel);
-        WeaponChaosLevel = Random.Range(-_chaosLevel, _chaosLevel);
-        PhysicsChaosLevel = Random.Range(-_chaosLevel, _chaosLevel);
+        EnemyChaosLevel = Random.Range(0, _chaosLevel * chaosScalingEnemies);
+        PlayerChaosLevel = Random.Range(-_chaosLevel * chaosScalingPlayer, _chaosLevel*chaosScalingPlayer);
+        WeaponChaosLevel = Random.Range(0, _chaosLevel * chaosScalingWeapons);
+        PhysicsChaosLevel = Random.Range(-1, _chaosLevel*chaosScalingPhysics);
+
+        if(PhysicsChaosLevel < 0 && PhysicsChaosLevel > -1)
+        {
+            PhysicsChaosLevel = -1;
+        }
     }
 
     public void modifyChaosLevel(int amount)

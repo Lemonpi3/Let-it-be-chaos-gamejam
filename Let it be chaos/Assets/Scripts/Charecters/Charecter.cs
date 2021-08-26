@@ -110,8 +110,9 @@ public abstract class Charecter : MonoBehaviour
 
     public void ApplyChaos_Physics()
     {
-        rb.gravityScale *= (ChaosManager.PhysicsChaosLevel-(ChaosManager.PhysicsChaosLevel * chaosResistance));
-
+        //Attempt to prevent unplayability
+        rb.gravityScale =Mathf.Clamp(rb.gravityScale * (ChaosManager.PhysicsChaosLevel-(ChaosManager.PhysicsChaosLevel * chaosResistance)),rb.gravityScale * -2, rb.gravityScale * 2);
+        
         if(rb.gravityScale == 0)
         {
             rb.gravityScale = defaultGravityScale;

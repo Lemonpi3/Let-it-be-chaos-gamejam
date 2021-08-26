@@ -5,21 +5,36 @@ using UnityEngine;
 public class MapTrigger : MonoBehaviour
 {
     [SerializeField]
-    private GameObject[] objects;
+    private GameObject[] objectsOnEnter;
+    [SerializeField]
+    private GameObject[] objectsOnExit;
     [SerializeField]
     private string triggerTag = "Player";
-    [SerializeField]
-    private bool hasTriggered;
+    
+    private bool hasTriggeredEnter;
+    private bool hasTriggeredExit;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == triggerTag && !hasTriggered)
+        if(collision.tag == triggerTag && !hasTriggeredEnter)
         {
-            for (int i = 0; i < objects.Length; i++)
+            for (int i = 0; i < objectsOnEnter.Length; i++)
             {
-                objects[i].SetActive(!objects[i].activeSelf);
+                objectsOnEnter[i].SetActive(!objectsOnEnter[i].activeSelf);
             }
-            hasTriggered = true;
+            hasTriggeredEnter = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == triggerTag && !hasTriggeredExit)
+        {
+            for (int i = 0; i < objectsOnExit.Length; i++)
+            {
+                objectsOnExit[i].SetActive(!objectsOnExit[i].activeSelf);
+            }
+            hasTriggeredExit = true;
         }
     }
 }

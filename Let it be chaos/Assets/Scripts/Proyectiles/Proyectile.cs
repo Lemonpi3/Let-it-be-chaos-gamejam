@@ -43,10 +43,11 @@ public class Proyectile : MonoBehaviour
         {
             return;
         }
-        Hit();
+
         if (collision.tag == "Player" || collision.tag == "Enemy")
         {
             collision.gameObject.GetComponent<Charecter>().TakeDamage(damage);
+            Hit();
         }
     }
 

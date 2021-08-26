@@ -30,6 +30,7 @@ public abstract class Weapon : MonoBehaviour
     protected int defaultDmg;
     protected float defaultAttackSpeed;
     protected float defaultGravityScale;
+    protected GameObject defaultProyectile;
 
     protected bool isShooting;
     Transform playerTransform;
@@ -43,6 +44,7 @@ public abstract class Weapon : MonoBehaviour
         defaultDmg = damage;
         defaultGravityScale = proyectileGravityScale;
         defaultAttackSpeed = attackSpeed;
+        defaultProyectile = proyectile;
     }
     public bool Shoot(Transform spawnPos, Vector2 direction = new Vector2())
     {
@@ -99,7 +101,7 @@ public abstract class Weapon : MonoBehaviour
         {
             attackSpeed = 0.1f;
         }
-        proyectileGravityScale = 1 * chaos;
+        proyectileGravityScale = Random.Range(0,chaos);
         Debug.Log(damage);
     }
 

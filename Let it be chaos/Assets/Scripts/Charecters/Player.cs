@@ -8,8 +8,9 @@ public class Player : Charecter
     private GroundCheck groundCheck;
     [SerializeField]
     private Transform bulletSpawnpoint;
-    [SerializeField]
+    
     private Transform checkPoint;
+    private int currentCheckpoint;
 
     public Weapon[] weapon;
     [SerializeField]
@@ -18,7 +19,8 @@ public class Player : Charecter
     private StatusBar chaosBar;
     [SerializeField]
     private StatusBar maxHpBar;
-
+    [SerializeField]
+    private LevelLoader levelLoader;
     private int currentWeapon = 0;
 
     public float _chaosResistance { get => chaosResistance; }
@@ -132,7 +134,14 @@ public class Player : Charecter
     }
     public override void Die()
     {
-        transform.position = checkPoint.position;
-        Start();
+        levelLoader.ReloadLevel();
+    }
+    public void SetCheckpoint(Transform _checkpoint,int checkpointIndex)
+    {
+        if(checkpointIndex >= currentCheckpoint)
+        {
+            checkPoint = _checkpoint;
+            currentCheckpoint = checkpointIndex;
+        }
     }
 }

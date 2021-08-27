@@ -62,6 +62,9 @@ public class ChaosManager : MonoBehaviour
     public static float medEnemySpeed =>instance.baseEnemySpeed* instance.medSpeedScaling;
     public static float bigEnemySpeed => instance.baseEnemySpeed * instance.bigSpeedScaling;
 
+    [Header("Weapons Chaos stuff")]
+   
+    public GameObject[] proyectilePool;
 
     [Header("Chaos Settings")]
 
@@ -106,7 +109,7 @@ public class ChaosManager : MonoBehaviour
 
     private void Start()
     {
-        EnemyChaosLevel = defaultEnemyChaosLevel;
+        defaultChaosLevel = chaosLevelCurrent;
         PlayerChaosLevel = defaultPlayerChaosLevel;
         PhysicsChaosLevel = defaultPhysicsChaosLevel;
         WeaponChaosLevel = defaultWeaponChaosLevel;
@@ -116,20 +119,28 @@ public class ChaosManager : MonoBehaviour
 
     public void RandomizeChaos()
     {
-        EnemyChaosLevel = Random.Range(0, _chaosLevel * chaosScalingEnemies);
+        EnemyChaosLevel = Random.Range(-_chaosLevel * chaosScalingEnemies, _chaosLevel * chaosScalingEnemies);
         PlayerChaosLevel = Random.Range(-_chaosLevel * chaosScalingPlayer, _chaosLevel*chaosScalingPlayer);
-        WeaponChaosLevel = Random.Range(0, _chaosLevel * chaosScalingWeapons);
+        WeaponChaosLevel = Random.Range(-1, _chaosLevel * chaosScalingWeapons);
         PhysicsChaosLevel = Random.Range(-1, _chaosLevel*chaosScalingPhysics);
 
-        if(PhysicsChaosLevel < 0 && PhysicsChaosLevel > -1)
+        if(PhysicsChaosLevel <= 0 && PhysicsChaosLevel > -1)
         {
             PhysicsChaosLevel = -1;
+        }
+        if(WeaponChaosLevel <= 0 || WeaponChaosLevel > -1)
+        {
+            WeaponChaosLevel = -1;
         }
     }
 
     public void modifyChaosLevel(int amount)
     {
         instance.chaosLevelCurrent += amount;
+        if(chaosLevelCurrent < chaosLevelMax)
+        {
+            chaosLevelCurrent = chaosLevelMax;
+        }
         RandomizeChaos();
     }
 

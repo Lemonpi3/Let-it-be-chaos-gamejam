@@ -9,13 +9,13 @@ public class Enemy : Charecter
     [SerializeField]
     private EnemyData enemyData;
     [SerializeField]
-    private int damage;
+    protected int damage;
     [SerializeField]
     TypeOfAttack typeOfAttack;
     [SerializeField]
-    private float attackRange;
+    public float attackRange;
     [SerializeField]
-    private float attackSpeed;
+    protected float attackSpeed;
     [SerializeField]
     private EnemySize enemySize;
     [Header("Suicidal & Ranged settings")]
@@ -27,15 +27,25 @@ public class Enemy : Charecter
     private Transform specialSpawn;
     [SerializeField]
     private GameObject enemyWeapon;
+    [Header("Loot")]
+    [SerializeField]
+    private GameObject[] loot = new GameObject[1];
+    [SerializeField,Range(0,100)]
+    private float lootChance;
+    public bool isBoss = false;
+    [SerializeField]
+    Boss bossScript;
     private Weapon enemyWeaponScript;
 
+    private int defaultDamage;
+
     private float timer = 0;
-    private Charecter target;
+    public Charecter target;
     EnemyAI enemyAI;
 
     private void Awake()
     {
-        if (enemyData == null)
+        if (enemyData == null && !isBoss)
         {
             Debug.Log("No enemyData found in: " + gameObject.name);
             Destroy(gameObject);
@@ -88,7 +98,16 @@ public class Enemy : Charecter
                 damage = ChaosManager.bigEnemyDamage;
                 transform.localScale =Vector3.one * 2f;
                 break;
+            case EnemySize.Boss:
+                maxHealth = enemyData.maxHealth;
+                damage = enemyData.damage;
+                speed = enemyData.speed;
+                rb.gravityScale = enemyData.gravityScale;
+                break;
         }
+
+        defaultDamage = damage;
+
         if (specialAttack != null)
         {
             if (specialAttack.gameObject.tag == "Weapon")
@@ -140,21 +159,60 @@ public class Enemy : Charecter
     }
     public override void UpdateStats()
     {
+        if(EnemySize.Boss == enemySize)
+        {
+            return;
+        }
         float chaos = (ChaosManager.EnemyChaosLevel - (ChaosManager.EnemyChaosLevel * chaosResistance));
-        maxHealth *= (int)Mathf.Abs(chaos);
-        speed = Mathf.Abs(speed *= chaos);
-        jumpForce = defaultGravityScale;
-        damage *= (int)Mathf.Abs(chaos);
-        
-        if(enemyWeaponScript != null)
+        maxHealth = Mathf.Clamp(defaultMaxHealth + (int)Random.Range(-defaultMaxHealth, chaos), 1, 100);
+        Heal((int)Random.Range(1, maxHealth));
+        speed = Mathf.Clamp(defaultSpeed * chaos, -defaultSpeed * 3, defaultSpeed * 3);
+        if (speed == 0)
+        {
+            speed = defaultSpeed;
+        }
+
+        jumpForce = Mathf.Clamp(defaultJumpForce + (defaultJumpForce * chaos), 0, defaultJumpForce * 3);
+        damage =(int) Mathf.Clamp(defaultDamage + (defaultDamage * chaos), 1, defaultDamage * 2);
+
+        if (enemyWeaponScript != null)
         {
             enemyWeaponScript.UpdateChaos();
         }
         base.UpdateStats();
+        //Debug.Log(gameObject.name + " MaxHealth: " + maxHealth + " Speed: " + speed + " JumpForce: " + jumpForce + " Damage "+damage+ " GrabScale: " + rb.gravityScale);
     }
 
     public override void SetCharecterDefaultStats()
     {
         SetStats();
+    }
+    public override void Die()
+    {
+        if(enemySize == EnemySize.Boss)
+        {
+            bossScript.Die();
+        }
+        DropLoot();
+        base.Die();
+    }
+    public void DropLoot()
+    {
+        if(loot[0]!= null)
+        {
+            for (int i = 0; i < loot.Length; i++)
+            {
+                float rng = Random.Range(0, 100);
+                if(rng <= lootChance)
+                {
+                    Instantiate(loot[i], transform.position, Quaternion.identity);
+                }
+            }
+        }
+    }
+        private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 }

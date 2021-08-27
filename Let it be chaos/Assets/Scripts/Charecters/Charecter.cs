@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public abstract class Charecter : MonoBehaviour
@@ -27,6 +28,7 @@ public abstract class Charecter : MonoBehaviour
     protected Vector2 direction;
     protected Rigidbody2D rb;
     protected Animator animator;
+    public bool inChaosZone;
 
     public bool isMoveing 
     {
@@ -42,6 +44,7 @@ public abstract class Charecter : MonoBehaviour
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         UpdateStats();
+        currentHealth = maxHealth;
     }
   
     protected virtual void Update()
@@ -81,6 +84,15 @@ public abstract class Charecter : MonoBehaviour
         }
     }
 
+    public virtual void Heal(int amount)
+    {
+        currentHealth += amount;
+        if(currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+    }
+
     public virtual void Die()
     {
         Destroy(gameObject);
@@ -89,10 +101,6 @@ public abstract class Charecter : MonoBehaviour
     public virtual void UpdateStats()
     {
         ApplyChaos_Physics();
-        if (maxHealth <= 0)
-        {
-            maxHealth = 1;
-        }
         if (currentHealth > maxHealth)
         {
             currentHealth = maxHealth;
@@ -103,27 +111,49 @@ public abstract class Charecter : MonoBehaviour
     {
         rb.gravityScale = defaultGravityScale;
         maxHealth = defaultMaxHealth;
-        currentHealth = maxHealth;
         jumpForce = defaultJumpForce;
         speed = defaultSpeed;
+        Heal(maxHealth);
     }
 
     public void ApplyChaos_Physics()
     {
         //Attempt to prevent unplayability
-        rb.gravityScale =Mathf.Clamp(rb.gravityScale * (ChaosManager.PhysicsChaosLevel-(ChaosManager.PhysicsChaosLevel * chaosResistance)),rb.gravityScale * -2, rb.gravityScale * 2);
-        
-        if(rb.gravityScale == 0)
+        float chaos = (ChaosManager.PhysicsChaosLevel - (ChaosManager.PhysicsChaosLevel * chaosResistance));
+
+        float gravity = Mathf.Clamp(defaultGravityScale + defaultGravityScale * chaos, -defaultGravityScale * 2, defaultGravityScale * 2);
+        rb.gravityScale = gravity;
+
+        if(gravity == 0)
         {
             rb.gravityScale = defaultGravityScale;
         } else
-        if(rb.gravityScale < 0)
+        if(gravity < 0)
         {
             transform.rotation = Quaternion.Euler(180, 0, 0);
         } else
-        if (rb.gravityScale > 0)
+        if (gravity > 0)
         {
             transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+    }
+    public void ModifyStats(int _maxHealthMod, float speedMod, float gravityMod)
+    {
+        float gravity = rb.gravityScale;
+        rb.gravityScale = gravity * gravityMod;
+        maxHealth = maxHealth +  _maxHealthMod;
+        speed = speed + speed * speedMod;
+        if (maxHealth <= 0)
+        {
+            maxHealth = Mathf.Abs(_maxHealthMod);
+        }
+        if (speed == 0)
+        {
+            speed = defaultSpeed;
+        }
+        if (rb.gravityScale == 0)
+        {
+            rb.gravityScale = defaultGravityScale;
         }
     }
 }

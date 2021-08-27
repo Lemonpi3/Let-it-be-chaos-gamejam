@@ -5,6 +5,8 @@ public class StatusBar : MonoBehaviour
 {
     [SerializeField]
     private Image fillImage;
+    [SerializeField]
+    private Text text;
 
     public void UpdateBar(float maxStat,float currentStat,bool inverseBar = false)
     {
@@ -19,5 +21,9 @@ public class StatusBar : MonoBehaviour
             return;
         }
         fillImage.fillAmount = (currentStat / maxStat);
+        if(text != null)
+        {
+            text.text = currentStat + "/" + maxStat;
+        }
     }
 }

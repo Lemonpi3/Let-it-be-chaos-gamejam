@@ -5,25 +5,25 @@ using UnityEngine;
 public class EnviromentHazard : MonoBehaviour
 {
     [SerializeField]
-    int damage = 1;
+    protected int damage = 1;
     [SerializeField]
-    float tickSpeed;
+    protected float tickSpeed;
     [SerializeField]
-    TypeOfHazzard typeOfHazzard;
+    protected TypeOfHazzard typeOfHazzard;
     [SerializeField]
     private GameObject Explotion;
     [SerializeField]
     private float explotionRadius = 3f;
 
     float timer;
-    enum TypeOfHazzard { Single, Continous, Explosive }
+    protected enum TypeOfHazzard { Single, Continous, Explosive ,Special}
 
     private void OnTriggerStay2D(Collider2D collision)
     {
         if(collision.tag == "Player" || collision.tag == "Enemy" && typeOfHazzard == TypeOfHazzard.Continous)
         {
             Charecter victim = collision.GetComponent<Charecter>();
-            TickDamage(victim);
+            Tick(victim);
         }
     }
 
@@ -44,14 +44,25 @@ public class EnviromentHazard : MonoBehaviour
         }
     }
 
-    private void TickDamage(Charecter charecter)
+    protected void Tick(Charecter charecter)
     {
         timer -= Time.deltaTime;
         if (timer <= 0)
         {
+            SpecialHazzard(charecter);
             charecter.TakeDamage(damage);
             timer = tickSpeed;
         }
     }
-    
+
+    public virtual void SpecialHazzard(Charecter charecter)
+    {
+
+    }
+
+    public void GetStats(int dmg,float _tickspeed)
+    {
+        damage = dmg;
+        tickSpeed = _tickspeed;
+    }
 }

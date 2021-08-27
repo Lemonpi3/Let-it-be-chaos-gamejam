@@ -83,5 +83,7 @@ public class Proyectile : MonoBehaviour
             direction.x = 1;
         }
         transform.localScale *= _proyectileRadius;
+        rb = GetComponent<Rigidbody2D>();
+        rb.gravityScale = gravityScale;
     }
 }

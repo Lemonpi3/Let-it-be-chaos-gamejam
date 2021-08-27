@@ -5,6 +5,7 @@ using Pathfinding;
 
 public class EnemyAI : MonoBehaviour
 {
+    
     [Header("Pathfinding")]
     public Transform target;
     public float activateDistance = 20f;
@@ -23,6 +24,7 @@ public class EnemyAI : MonoBehaviour
     [Header("Custom beheavior")]
     public bool followEnabled = true;
     public bool jumpEnabled = true;
+    public bool infiniteJumps = false;
 
     private Path path;
     private int currentWaypoint = 0;
@@ -32,28 +34,24 @@ public class EnemyAI : MonoBehaviour
     Rigidbody2D rb;
     Animator animator;
 
-    void Start()
+    public virtual void Start()
     {
         seeker = GetComponent<Seeker>();
-        enemy = GetComponent<Enemy>();
+        enemy = GetComponent<Enemy>(); 
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         InvokeRepeating("UpdatePath", 0, pathfinderUpdateSeconds);
     }
 
-    private void FixedUpdate()
+    public virtual void FixedUpdate()
     {
         if (TargetInDistance() && followEnabled)
         {
             PathFollow();
         }
     }
-    // Update is called once per frame
-    void Update()
-    {
-    }
 
-    private void UpdatePath()
+    protected void UpdatePath()
     {
         if (Vector2.Distance(transform.position, target.position) <= range)
         {
@@ -73,7 +71,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    private void PathFollow()
+    protected void PathFollow()
     {
         if (path == null)
         {
@@ -96,7 +94,7 @@ public class EnemyAI : MonoBehaviour
             {
                 rb.velocity = new Vector2(rb.velocity.x,jumpForce);
                 StartCoroutine(Cooldown(jumpCd));
-                jumpEnabled = false;
+                jumpEnabled = infiniteJumps;
             }
         }
 
@@ -113,12 +111,12 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    private bool TargetInDistance()
+    protected bool TargetInDistance()
     {
         return Vector2.Distance(transform.position, target.transform.position) < activateDistance;
     }
 
-    private void OnPathComplete(Path p)
+    protected void OnPathComplete(Path p)
     {
         animator.SetBool("walking", false);
         if (!p.error)
@@ -135,7 +133,7 @@ public class EnemyAI : MonoBehaviour
         range = attackRange;
     }
 
-    private IEnumerator Cooldown(float cooldown)
+    protected IEnumerator Cooldown(float cooldown)
     {
         float timer = cooldown;
         while (timer > 1f)

@@ -4,40 +4,32 @@ using UnityEngine;
 
 public class ChaosZone : MonoBehaviour
 {
-    public BoxCollider2D boxCollider2D;
+    float timer;
 
-    void Start()
-    {
-        InvokeRepeating("UpdateChaos", 0, 2);
-        boxCollider2D = GetComponent<BoxCollider2D>();
-    }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.tag == "Enemy" || collision.tag == "Player")
-        {
-            collision.GetComponent<Charecter>().UpdateStats();
-            Debug.Log("Updated " + collision.name);
-        }
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.tag == "Enemy" || collision.tag == "Player")
-        {
-            collision.GetComponent<Charecter>().UpdateStats();
-            Debug.Log("Updated " + collision.name);
-        }
-    }
-    
-    private void OnTriggerExit2D(Collider2D collision)
+    protected virtual void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.tag == "Enemy" || collision.tag == "Player")
         {
             collision.GetComponent<Charecter>().SetCharecterDefaultStats();
-            Debug.Log("Reseted " + collision.name);
         }
     }
 
-  
+    protected virtual void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.tag == "Enemy" || collision.tag == "Player")
+        {
+            ChaosUpdate(collision);
+        }
+    }
+
+    public virtual void ChaosUpdate(Collider2D collision)
+    {
+        timer -= Time.deltaTime;
+        if (timer <= 0)
+        {
+            collision.GetComponent<Charecter>().UpdateStats();
+            timer = ChaosManager._chaosUpdateInterval;
+        }
+    }
 }

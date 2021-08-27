@@ -37,6 +37,7 @@ public abstract class Weapon : MonoBehaviour
     [SerializeField]
     private Transform bulletParentTransform;
     private Vector2 direction;
+    private float chaos;
 
     protected void Start()
     {
@@ -90,19 +91,16 @@ public abstract class Weapon : MonoBehaviour
 
     public void UpdateChaos(float chaosResistance = 0)
     {
-        float chaos = (ChaosManager.WeaponChaosLevel - (ChaosManager.WeaponChaosLevel * chaosResistance));
-        damage *= (int)chaos;
-        if(chaos <= 1)
+        chaos = (ChaosManager.WeaponChaosLevel - (ChaosManager.WeaponChaosLevel * chaosResistance));
+
+        damage = (int)Mathf.Clamp(defaultDmg * Mathf.Abs(chaos), 1, damage * Mathf.Abs((chaos)));
+        attackSpeed = Mathf.Clamp(defaultAttackSpeed * Mathf.Abs(chaos), 0.1f, 3f);
+        proyectileGravityScale = 10 * chaos;
+        if (ChaosManager.instance.proyectilePool[0] != null)
         {
-            damage = 1;
+            proyectile = ChaosManager.instance.proyectilePool[(int)Random.Range(0, ChaosManager.instance.proyectilePool.Length)];
         }
-        attackSpeed *= chaos;
-        if(attackSpeed <= 0.1f)
-        {
-            attackSpeed = 0.1f;
-        }
-        proyectileGravityScale = Random.Range(0,chaos);
-        Debug.Log(damage);
+      //  Debug.Log("Weapon chaos Level: "+ chaos+ weaponName + " Damage: " + damage + " attackSpeed: " + attackSpeed + " proyectile and gravity scale: " + proyectile.name + " " + proyectileGravityScale);
     }
 
     public void ResetStats()
@@ -110,6 +108,8 @@ public abstract class Weapon : MonoBehaviour
         damage =defaultDmg;
         attackSpeed = defaultAttackSpeed;
         proyectileGravityScale = defaultGravityScale;
+        proyectile = defaultProyectile;
+        chaos = 0;
     }
 
     public virtual void SpawnBullet(Vector2 shootDir,Transform spawnPos)

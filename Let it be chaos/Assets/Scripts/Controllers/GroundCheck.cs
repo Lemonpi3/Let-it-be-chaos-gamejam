@@ -5,6 +5,13 @@ using UnityEngine;
 public class GroundCheck : MonoBehaviour
 {
     public bool isGrounded;
+    
+    public Vector3 defaultPos;
+
+    private void Start()
+    {
+        defaultPos = transform.localPosition;
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -20,5 +27,4 @@ public class GroundCheck : MonoBehaviour
             isGrounded = false;
         }
     }
-
 }

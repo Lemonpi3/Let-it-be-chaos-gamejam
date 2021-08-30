@@ -3,9 +3,6 @@ using UnityEngine;
 
 public abstract class Charecter : MonoBehaviour
 {
-    [SerializeField,Range(0,1)]
-    protected float chaosResistance = 0;
-
     [Header("Default Stats")]
     [SerializeField]
     protected float defaultGravityScale;
@@ -25,26 +22,27 @@ public abstract class Charecter : MonoBehaviour
     [SerializeField]
     protected int maxHealth = 6;
 
+    protected SpriteRenderer spriteRenderer;
     protected Vector2 direction;
     protected Rigidbody2D rb;
     protected Animator animator;
     public bool inChaosZone;
 
-    public bool isMoveing 
+    protected bool isMoveing 
     {
         get
         {
             return  direction.x != 0;
         }
     }
-    public bool isGrounded = true;
+    protected bool isGrounded = true;
 
     protected virtual void Start()
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-        UpdateStats();
-        currentHealth = maxHealth;
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        SetCharecterDefaultStats(true);
     }
   
     protected virtual void Update()
@@ -59,14 +57,14 @@ public abstract class Charecter : MonoBehaviour
 
         if (direction.x > 0)
         {
-            transform.rotation = Quaternion.Euler(0, 0, 0);
+            transform.rotation = Quaternion.Euler(transform.rotation.x, 0, 0);
         }
         else if(direction.x == 0)
         {
             return;
         }
         else
-            transform.rotation = Quaternion.Euler(0, 180, 0);
+            transform.rotation = Quaternion.Euler(transform.rotation.x, 180, 0);
     }
 
     public void Move(Vector2 direction)
@@ -98,62 +96,49 @@ public abstract class Charecter : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public virtual void UpdateStats()
+    public virtual void ApplyChaosStats()
     {
-        ApplyChaos_Physics();
-        if (currentHealth > maxHealth)
-        {
-            currentHealth = maxHealth;
-        }
+        
     }
 
-    public virtual void SetCharecterDefaultStats()
+    public virtual void SetCharecterDefaultStats(bool heal = false)
     {
         rb.gravityScale = defaultGravityScale;
         maxHealth = defaultMaxHealth;
         jumpForce = defaultJumpForce;
         speed = defaultSpeed;
-        Heal(maxHealth);
-    }
-
-    public void ApplyChaos_Physics()
-    {
-        //Attempt to prevent unplayability
-        float chaos = (ChaosManager.PhysicsChaosLevel - (ChaosManager.PhysicsChaosLevel * chaosResistance));
-
-        float gravity = Mathf.Clamp(defaultGravityScale + defaultGravityScale * chaos, -defaultGravityScale * 2, defaultGravityScale * 2);
-        rb.gravityScale = gravity;
-
-        if(gravity == 0)
+        if (heal)
         {
-            rb.gravityScale = defaultGravityScale;
-        } else
-        if(gravity < 0)
-        {
-            transform.rotation = Quaternion.Euler(180, 0, 0);
-        } else
-        if (gravity > 0)
-        {
-            transform.rotation = Quaternion.Euler(0, 0, 0);
+            Heal(maxHealth);
         }
     }
-    public void ModifyStats(int _maxHealthMod, float speedMod, float gravityMod)
+
+
+    protected virtual void FlipUpsideDown(GroundCheck groundCheck)
     {
-        float gravity = rb.gravityScale;
-        rb.gravityScale = gravity * gravityMod;
-        maxHealth = maxHealth +  _maxHealthMod;
-        speed = speed + speed * speedMod;
-        if (maxHealth <= 0)
+        if(rb.gravityScale >= 0)
         {
-            maxHealth = Mathf.Abs(_maxHealthMod);
+            groundCheck.transform.localPosition = groundCheck.defaultPos;
+            spriteRenderer.flipY = false;
+            if (jumpForce < 0)
+            {
+                jumpForce *= -1;
+            }
         }
-        if (speed == 0)
+       
+        if (rb.gravityScale < 0)
         {
-            speed = defaultSpeed;
+            groundCheck.transform.localPosition = groundCheck.defaultPos * -1;
+            spriteRenderer.flipY = true;
+            if(jumpForce > 0)
+            {
+                jumpForce *= -1;
+            }
         }
-        if (rb.gravityScale == 0)
-        {
-            rb.gravityScale = defaultGravityScale;
-        }
+    }
+
+    public float GetCurrentHealthPercent()
+    {
+        return currentHealth / maxHealth;
     }
 }

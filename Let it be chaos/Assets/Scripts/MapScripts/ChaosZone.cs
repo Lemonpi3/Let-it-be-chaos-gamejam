@@ -5,6 +5,8 @@ using UnityEngine;
 public class ChaosZone : MonoBehaviour
 {
     float timer;
+    [SerializeField]
+    float updateTime = 4f;
 
 
     protected virtual void OnTriggerExit2D(Collider2D collision)
@@ -28,8 +30,9 @@ public class ChaosZone : MonoBehaviour
         timer -= Time.deltaTime;
         if (timer <= 0)
         {
-            collision.GetComponent<Charecter>().UpdateStats();
-            timer = ChaosManager._chaosUpdateInterval;
+            collision.GetComponent<Charecter>().ApplyChaosStats();
+            Debug.Log("UpdatedChaos in " + collision.name);
+            timer = updateTime;
         }
     }
 }

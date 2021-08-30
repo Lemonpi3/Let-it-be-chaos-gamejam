@@ -6,26 +6,38 @@ public class FirstBoss : Boss
 {
     [Header("Boss Stats")]
     [SerializeField]
-    int chaosLevelModifier;
-    
+    int chaosLevelModifierMin;
+    int chaosLevelModifierMax;
+
+    [SerializeField,Range(0,1)]
+    float enragePercent= 0.3f;
+
     [Header("ChaosStorm")]
+
     [SerializeField]
     int chaosStormDamage;
+
     [SerializeField]
-    float chaosStormStatModifier;
+    float chaosStormRadius;
+
     [SerializeField]
     float chaosStormTickSpeed;
+
     [SerializeField]
     float lifeTime;
+
     [SerializeField]
     float chaosStormCD;
+
     [SerializeField]
     float timeToCastFirstChaosStorm;
+
     [SerializeField]
     GameObject chaosStormGO;
     
     [SerializeField]
     GameObject exitPortalGO;
+
     [SerializeField]
     GameObject bossChaosZone;
 
@@ -40,11 +52,19 @@ public class FirstBoss : Boss
         InvokeRepeating("SpawnChaosStorm", timeToCastFirstChaosStorm, chaosStormCD);
     }
 
+    private void Update()
+    {
+        if (enemy.GetCurrentHealthPercent() <= enragePercent && enemy.GetCurrentHealthPercent() > 0)
+        {
+            Enrage();
+        }
+    }
+
     public override void Die()
     {
         exitPortalGO.SetActive(true);
         bossChaosZone.SetActive(false);
-        ChaosManager.instance.modifyChaosLevel(chaosLevelModifier);
+        ChaosManager.instance.NewChaosLevel(chaosLevelModifierMin, chaosLevelModifierMax);
         Destroy(gameObject);
     }
 
@@ -52,17 +72,13 @@ public class FirstBoss : Boss
     {
         if (Vector2.Distance(transform.position, enemy.target.transform.position) <= enemy.attackRange*5)
         {
-            gravityModifier = Random.Range(-chaosStormStatModifier, chaosStormStatModifier);
-            if (gravityModifier == 0)
-            {
-                gravityModifier = 1;
-            }
-            maxHealthModifier = chaosStormDamage + (int)Random.Range(-chaosStormStatModifier, chaosStormStatModifier);
-            speedModifier = Random.Range(-chaosStormStatModifier, chaosStormStatModifier);
-            lifeTime = Random.Range(0, lifeTime * (1 / chaosStormStatModifier));
-
             ChaosStorm chaosStorm = Instantiate(chaosStormGO, enemy.target.gameObject.transform.position, Quaternion.identity, this.transform).GetComponent<ChaosStorm>();
-            chaosStorm.GetStats(chaosStormDamage, chaosStormTickSpeed, gravityModifier, maxHealthModifier, speedModifier, lifeTime);
+            chaosStorm.GetStats(chaosStormDamage, chaosStormTickSpeed, chaosStormRadius, lifeTime);
         }
+    }
+
+    private void Enrage()
+    {
+        bossChaosZone.SetActive(true);
     }
 }

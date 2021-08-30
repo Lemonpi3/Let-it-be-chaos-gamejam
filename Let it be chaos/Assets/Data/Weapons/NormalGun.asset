@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b82edd75aafb1f4eba81231b7630199, type: 3}
+  m_Name: NormalGun
+  m_EditorClassIdentifier: 
+  _weaponName: NormalGun
+  _damage: 1
+  _attackSpeed: 1
+  _attackRange: 10
+  _isExplosive: 0
+  _proyectileRadius: 1
+  _proyectileSpeed: 10
+  _proyectileGravityScale: 0
+  _explosiveRange: 1
+  _explosiveDamage: 1
+  _proyectilePrefab: {fileID: 7018380185878723311, guid: 8e663f369cfefe24fafaf7a6ddbc8879, type: 3}

@@ -9,7 +9,7 @@ public class ChaosStorm : EnviromentHazard
     private float speedModifier;
 
     private float lifeTime =1;
-    private int minSpawnChance;
+    private Charecter player;
 
     private void Update()
     {
@@ -24,25 +24,21 @@ public class ChaosStorm : EnviromentHazard
     {
         if(charecter.tag == "Player")
         {
-            charecter.ModifyStats(maxHealthModifier, speedModifier, gravityModifier);
-            charecter.Heal(Random.Range(0, damage * 2));
+            charecter.ApplyChaosStats();
+            player = charecter;
         }
     }
-    public void GetStats(int _damage,float _tickSpeed,float _gravityModifier,int _maxHealthModifier,float _speedModifier,float _lifeTime)
-    {
-        damage = Random.Range(_damage, damage * 2);
-        tickSpeed = _tickSpeed;
-        gravityModifier = _gravityModifier;
-        maxHealthModifier = _maxHealthModifier;
-        speedModifier = _speedModifier;
-        lifeTime = _lifeTime;
 
-        int extraSpawnChance = (int)Random.Range(minSpawnChance, ChaosManager._chaosLevelMax * 1.5f );
-        if(extraSpawnChance <= ChaosManager._chaosLevel)
-        {
-            minSpawnChance = extraSpawnChance;
-            Instantiate(this.gameObject, transform.position * Random.Range(-3,3), Quaternion.identity);
-        }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        player.SetCharecterDefaultStats();
     }
-    
+
+    public void GetStats(int _damage,float radius,float _tickSpeed,float _lifeTime)
+    {
+        damage = _damage;
+        tickSpeed = _tickSpeed;
+        lifeTime = _lifeTime;
+        transform.localScale *= radius;
+    }
 }

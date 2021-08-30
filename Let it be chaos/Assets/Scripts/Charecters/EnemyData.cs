@@ -46,16 +46,6 @@ public class EnemyData : ScriptableObject
     private float _attackSpeed = 1;
     public float attackSpeed { get => _attackSpeed; }
 
-    [Header("Suicidal & Ranged Attack settings")]
-    [SerializeField]
-    private GameObject _specialAttack;
-    public GameObject specialAttack { get => _specialAttack; }
-
-    [SerializeField]
-    private float _specialRadius = 10f;
-    public float specialRadius { get => _specialRadius; }
-    [Header("Boss Stats")]
-
     [SerializeField]
     private int _damage = 1;
     public int damage { get => _damage; }
@@ -65,12 +55,23 @@ public class EnemyData : ScriptableObject
     public int maxHealth { get => _maxHealth; }
 
     [SerializeField]
-    private float _speed= 10f;
+    private float _speed = 10f;
     public float speed { get => _speed; }
 
     [SerializeField]
     private float _gravityScale = 10f;
     public float gravityScale { get => _gravityScale; }
+
+    [Header("Suicidal & Ranged Attack settings")]
+    [SerializeField]
+    private GameObject _specialAttack;
+    public GameObject specialAttack { get => _specialAttack; }
+
+    [SerializeField]
+    private float _specialRadius = 10f;
+    public float specialRadius { get => _specialRadius; }
+
+    
 }
 public enum EnemySize { Small,Medium,Big,Boss}
 public enum TypeOfAttack { Melee,Melee_Suicidal,Range_Proyectile,Range_Beam}

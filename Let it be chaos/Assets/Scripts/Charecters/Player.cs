@@ -23,7 +23,6 @@ public class Player : Charecter
     private LevelLoader levelLoader;
     private int currentWeapon = 0;
 
-    public float _chaosResistance { get => chaosResistance; }
 
     bool isShooting
     {
@@ -37,7 +36,7 @@ public class Player : Charecter
     {
         base.Start();
         UpdateStatusBars();
-        animator.SetFloat("attackSpeed", 0.25f / weapon[currentWeapon].attackSpeed);
+        
     }
 
     private void FixedUpdate()
@@ -63,6 +62,7 @@ public class Player : Charecter
         if (Input.GetAxisRaw("Horizontal") != 0)
         {
             Move(direction);
+            FlipUpsideDown(groundCheck);
         }
         if (Input.GetButton("Fire1"))
         {
@@ -72,6 +72,10 @@ public class Player : Charecter
         {
             weapon[currentWeapon].StopShooting();
             SwapWeapon();
+        }
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            FlipUpsideDown(groundCheck);
         }
     }
 
@@ -84,6 +88,7 @@ public class Player : Charecter
             currentWeapon = 0;
         }
         weapon[currentWeapon].gameObject.SetActive(true);
+        animator.SetFloat("attackSpeed", 0.25f / weapon[currentWeapon].GetAttackSpeed());
     }
 
     public override void TakeDamage(int amount)
@@ -92,37 +97,46 @@ public class Player : Charecter
         UpdateStatusBars();
     }
 
+    public override void Heal(int amount)
+    {
+        base.Heal(amount);
+        UpdateStatusBars();
+    }
+
     public void UpdateStatusBars()
     {
         hpBar.UpdateBar(maxHealth, currentHealth);
-        chaosBar.UpdateBar(ChaosManager._chaosLevelMax,(ChaosManager._chaosLevel - (ChaosManager._chaosLevel * chaosResistance)));
+        chaosBar.UpdateBar(ChaosManager._chaosLevelMax,ChaosManager._chaosLevel);
         maxHpBar.UpdateBar(defaultMaxHealth, maxHealth, true);
     }
 
-    public override void UpdateStats()
+    public override void ApplyChaosStats()
     {
-        float chaos = (ChaosManager.PlayerChaosLevel - (ChaosManager.PlayerChaosLevel * chaosResistance));
-        maxHealth = (int)Mathf.Clamp(defaultMaxHealth + chaos, 1, 100);
-        speed = Mathf.Clamp(defaultSpeed * chaos, -defaultSpeed * 3, defaultSpeed * 3);
-        if(speed == 0)
-        {
-            speed = defaultSpeed;
-        }
-
-        jumpForce = Mathf.Clamp(defaultJumpForce +(defaultJumpForce* chaos), 0, defaultJumpForce * 3);
-
+        maxHealth = ChaosManager.instance.playerMaxHealth_ChaosMod;
+        rb.gravityScale = ChaosManager.instance.playerGravity_ChaosMod;
+        jumpForce = ChaosManager.instance.playerJumpForce_ChaosMod;
+        speed = ChaosManager.instance.playerSpeed_ChaosMod;
+        Debug.Log(maxHealth + " " + rb.gravityScale + " " + jumpForce + " " + speed);
         for (int i = 0; i < weapon.Length; i++)
         {
-            weapon[i].UpdateChaos(chaosResistance);
+            if (!weapon[i].enabled)
+            {
+                weapon[i].gameObject.SetActive(true);
+            }
+            weapon[i].UpdateChaos();
+            if (i != currentWeapon)
+            {
+                weapon[i].gameObject.SetActive(false);
+            }
         }
-        base.UpdateStats();
-        Heal((int)Random.Range(1, maxHealth));
         UpdateStatusBars();
-        Debug.Log("MaxHealth: " + maxHealth + " Speed: " + speed + " JumpForce: " + jumpForce + " GrabScale: "+rb.gravityScale);
+        FlipUpsideDown(groundCheck);
     }
 
-    public override void SetCharecterDefaultStats()
+    public override void SetCharecterDefaultStats(bool heal = false)
     {
+        base.SetCharecterDefaultStats();
+        FlipUpsideDown(groundCheck);
         for (int i = 0; i < weapon.Length; i++)
         {
             if (!weapon[i].enabled)
@@ -130,20 +144,18 @@ public class Player : Charecter
                 weapon[i].gameObject.SetActive(true);
             }
             weapon[i].ResetStats();
-            if(i != currentWeapon)
+            if (i != currentWeapon)
             {
                 weapon[i].gameObject.SetActive(false);
             }
         }
-
-        base.SetCharecterDefaultStats();
         UpdateStatusBars();
     }
 
     public override void Die()
     {
-        levelLoader.ReloadLevel();
         SetCharecterDefaultStats();
+        levelLoader.ReloadLevel();
     }
 
     public void SetCheckpoint(Transform _checkpoint,int checkpointIndex)
@@ -154,5 +166,20 @@ public class Player : Charecter
             currentCheckpoint = checkpointIndex;
         }
     }
-    
+
+    public void ResetWeapon()
+    {
+        for (int i = 0; i < weapon.Length; i++)
+        {
+            if (!weapon[i].enabled)
+            {
+                weapon[i].gameObject.SetActive(true);
+            }
+            weapon[i].ResetStats();
+            if (i != currentWeapon)
+            {
+                weapon[i].gameObject.SetActive(false);
+            }
+        }
+    }
 }

@@ -31,6 +31,7 @@ public class ChaosManager : MonoBehaviour
     private int medHealthScaling = 3;
     [SerializeField]
     private int bigHealthScaling = 5;
+
     [Header("Enemy Damage")]
     [SerializeField]
     private int baseDamage = 1;
@@ -40,6 +41,7 @@ public class ChaosManager : MonoBehaviour
     private int medEnemyScaling = 5;
     [SerializeField]
     private int bigEnemyScaling = 10;
+
     [Header("Enemy Speed")]
     [SerializeField]
     private float baseEnemySpeed = 10;
@@ -50,21 +52,150 @@ public class ChaosManager : MonoBehaviour
     [SerializeField]
     private float bigSpeedScaling = 0.8f;
 
-    public static int smallEnemyHealth => instance.baseEnemyHealth * instance.smallHealthScaling;
-    public static int medEnemyHealth => instance.baseEnemyHealth * instance.medHealthScaling;
-    public static int bigEnemyHealth => instance.baseEnemyHealth * instance.bigHealthScaling;
+    [Header("EnemyChaosRNG Values")]
+    [SerializeField, Tooltip("Modifies Multiplicative")]
+    private float[] _enemyGravity_ChaosMod;
+    [SerializeField]
+    private int[] _enemyDamage_ChaosMod;
+    [SerializeField,Tooltip("Modifies Multiplicative")]
+    private float[] _enemySpeed_ChaosMod;
+    [SerializeField]
+    private float[] _enemyJumpForce_ChaosMod;
+
     
-    public static int smallEnemyDamage => instance.baseDamage * instance.smallEnemyScaling;
-    public static int medEnemyDamage => instance.baseDamage * instance.medEnemyScaling;
-    public static int bigEnemyDamage => instance.baseDamage * instance.bigEnemyScaling;
+    public int enemyDamage_ChaosMod { 
+        get 
+        {
+           int rng = Random.Range(0, (_enemyDamage_ChaosMod.Length * (chaosLevelCurrent / chaosLevelMax)));
+           return _enemyDamage_ChaosMod[rng];
+        } 
+    }
+
+    public float enemyGravity_ChaosMod { 
+        get
+        {
+            int rng = Random.Range(0, (_enemyGravity_ChaosMod.Length * (chaosLevelCurrent / chaosLevelMax)));
+            return _enemyGravity_ChaosMod[rng];
+        }
+    }
+
+    public float enemySpeed_ChaosMod {
+        get 
+        {
+           int rng = Random.Range(0, (_enemySpeed_ChaosMod.Length * (chaosLevelCurrent / chaosLevelMax)));
+           return _enemySpeed_ChaosMod[rng];
+        }
+    }
+
+    public float enemyJumpForce_ChaosMod {
+        get 
+        {   
+            int rng = Random.Range(0, (_enemyJumpForce_ChaosMod.Length * (chaosLevelCurrent / chaosLevelMax)));
+            return  _enemyJumpForce_ChaosMod[rng];
+        }
+    }
+
+    public static int smallEnemyHealth =>(int) instance.baseEnemyHealth * instance.smallHealthScaling;
+    public static int medEnemyHealth => (int)instance.baseEnemyHealth * instance.medHealthScaling;
+    public static int bigEnemyHealth => (int)instance.baseEnemyHealth * instance.bigHealthScaling;
+    
+    public static int smallEnemyDamage => (int)instance.baseDamage * instance.smallEnemyScaling;
+    public static int medEnemyDamage => (int)instance.baseDamage * instance.medEnemyScaling;
+    public static int bigEnemyDamage => (int)instance.baseDamage * instance.bigEnemyScaling;
 
     public static float smallEnemySpeed =>instance.baseEnemySpeed * instance.smallSpeedScaling;
     public static float medEnemySpeed =>instance.baseEnemySpeed* instance.medSpeedScaling;
     public static float bigEnemySpeed => instance.baseEnemySpeed * instance.bigSpeedScaling;
 
+    [Header("playerChaosRNG Values")]
+    [SerializeField]
+    private int[] _playerGravity_ChaosMod;
+    [SerializeField]
+    private int[] _playerMaxHealth_ChaosMod;
+    [SerializeField]
+    private float[] _playerSpeed_ChaosMod;
+    [SerializeField]
+    private float[] _playerJumpForce_ChaosMod;
+
+    public int playerGravity_ChaosMod
+    {   
+        get
+        {
+            int rng = Random.Range(0, (_playerGravity_ChaosMod.Length * (chaosLevelCurrent / chaosLevelMax)));
+            return _playerGravity_ChaosMod[rng];
+        }
+    }
+    public int playerMaxHealth_ChaosMod{
+        get
+        {
+            int rng = Random.Range(0, (_playerMaxHealth_ChaosMod.Length * (chaosLevelCurrent / chaosLevelMax)));
+            return _playerMaxHealth_ChaosMod[rng];
+        }
+    }
+    public float playerSpeed_ChaosMod
+    {
+        get
+        {
+            int rng = Random.Range(0, (_playerSpeed_ChaosMod.Length * (chaosLevelCurrent / chaosLevelMax)));
+            return _playerSpeed_ChaosMod[rng];
+        }
+    }
+    public float playerJumpForce_ChaosMod
+    {
+        get
+        {
+            int rng = Random.Range(0, (_playerJumpForce_ChaosMod.Length * (chaosLevelCurrent / chaosLevelMax)));
+            return _playerJumpForce_ChaosMod[rng];
+        }
+    }
+
     [Header("Weapons Chaos stuff")]
-   
-    public GameObject[] proyectilePool;
+
+    [SerializeField]
+    private GameObject[] _proyectilePool;
+    [SerializeField]
+    private int[] _proyectileGravity_ChaosMod;
+    [SerializeField]
+    private int[] _proyectileDamage_ChaosMod;
+    [SerializeField]
+    private float[] _weaponAttackSpeed_ChaosMod;
+    
+    //Returns one random value of its respective array
+    public GameObject proyectilePool
+    { 
+        get
+        {
+            int rng = Random.Range(0, _proyectilePool.Length);
+            return _proyectilePool[rng];
+        } 
+    }
+
+    public int proyectileGravity_ChaosMod
+    { 
+        get 
+        {
+            int rng = Random.Range(0, (_proyectileGravity_ChaosMod.Length * (chaosLevelCurrent / chaosLevelMax)));
+            return _proyectileGravity_ChaosMod[rng];
+        } 
+    }
+
+    public int proyectileDamage_ChaosMod
+    {
+        get
+        {
+            int rng = Random.Range(0, (_proyectileDamage_ChaosMod.Length * (chaosLevelCurrent / chaosLevelMax)));
+            return _proyectileDamage_ChaosMod[rng];
+        }
+    }
+
+    public float weaponAttackSpeed_ChaosMod 
+    { 
+        get
+        {
+            int rng = Random.Range(0, (_weaponAttackSpeed_ChaosMod.Length * (chaosLevelCurrent / chaosLevelMax)));
+            return _weaponAttackSpeed_ChaosMod[rng];
+        }
+    }
 
     [Header("Chaos Settings")]
 
@@ -73,83 +204,40 @@ public class ChaosManager : MonoBehaviour
     [SerializeField]
     private int chaosLevelMax = 100;
     [SerializeField]
+    private int chaosLevelMin = 1;
+    [SerializeField]
     private float ChaosUpdateInterval = 30;
 
     [Header("Default values")]
     
     [SerializeField]
     private int defaultChaosLevel = 1;
-    [SerializeField]
-    private int defaultEnemyChaosLevel = 1;
-    [SerializeField]
-    private int defaultPlayerChaosLevel = 1;
-    [SerializeField]
-    private int defaultWeaponChaosLevel = 1;
-    [SerializeField]
-    private int defaultPhysicsChaosLevel = 1;
-
-    [Header("General Chaos Scaling")]
-
-    [Range(0, 1), SerializeField]
-    private float chaosScalingPlayer=1;
-    [Range(0, 1), SerializeField]
-    private float chaosScalingPhysics=1;
-    [Range(0, 1), SerializeField]
-    private float chaosScalingEnemies=1;
-    [Range(0, 1), SerializeField]
-    private float chaosScalingWeapons=1;
 
     public static int _chaosLevel =>instance.chaosLevelCurrent;
     public static int _chaosLevelMax => instance.chaosLevelMax;
     public static float _chaosUpdateInterval => instance.ChaosUpdateInterval;
-    public static float EnemyChaosLevel;
-    public static float PlayerChaosLevel;
-    public static float WeaponChaosLevel;
-    public static float PhysicsChaosLevel;
+    
 
     private void Start()
     {
-        defaultChaosLevel = chaosLevelCurrent;
-        PlayerChaosLevel = defaultPlayerChaosLevel;
-        PhysicsChaosLevel = defaultPhysicsChaosLevel;
-        WeaponChaosLevel = defaultWeaponChaosLevel;
-        EnemyChaosLevel = defaultEnemyChaosLevel;
         InvokeRepeating("RandomizeChaos", 0, ChaosUpdateInterval);
     }
 
     public void RandomizeChaos()
     {
-        EnemyChaosLevel = Random.Range(-_chaosLevel * chaosScalingEnemies, _chaosLevel * chaosScalingEnemies);
-        PlayerChaosLevel = Random.Range(-_chaosLevel * chaosScalingPlayer, _chaosLevel*chaosScalingPlayer);
-        WeaponChaosLevel = Random.Range(-1, _chaosLevel * chaosScalingWeapons);
-        PhysicsChaosLevel = Random.Range(-1, _chaosLevel*chaosScalingPhysics);
-
-        if(PhysicsChaosLevel <= 0 && PhysicsChaosLevel > -1)
-        {
-            PhysicsChaosLevel = -1;
-        }
-        if(WeaponChaosLevel <= 0 || WeaponChaosLevel > -1)
-        {
-            WeaponChaosLevel = -1;
-        }
+        //chaosLevelCurrent = Random.Range(chaosLevelMin, chaosLevelMax);
     }
 
-    public void modifyChaosLevel(int amount)
+    public void NewChaosLevel(int min,int max)
     {
-        instance.chaosLevelCurrent += amount;
-        if(chaosLevelCurrent < chaosLevelMax)
-        {
-            chaosLevelCurrent = chaosLevelMax;
-        }
+        chaosLevelMin = min;
+        chaosLevelMax = max;
         RandomizeChaos();
     }
 
-    public void ResetChaos()
+    public void ResetAllChaos()
     {
         chaosLevelCurrent = defaultChaosLevel;
-        EnemyChaosLevel = defaultEnemyChaosLevel;
-        PlayerChaosLevel = defaultPlayerChaosLevel;
-        WeaponChaosLevel = defaultWeaponChaosLevel;
-        PhysicsChaosLevel = defaultPhysicsChaosLevel;
+        RandomizeChaos();
     }
 }

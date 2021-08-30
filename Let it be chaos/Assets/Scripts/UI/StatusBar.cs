@@ -23,7 +23,7 @@ public class StatusBar : MonoBehaviour
         fillImage.fillAmount = (currentStat / maxStat);
         if(text != null)
         {
-            text.text = currentStat + "/" + maxStat;
+            text.text = (Mathf.Round((currentStat / maxStat * 100))).ToString() + "%";
         }
     }
 }

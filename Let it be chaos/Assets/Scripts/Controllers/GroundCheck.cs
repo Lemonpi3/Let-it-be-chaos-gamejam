@@ -10,7 +10,7 @@ public class GroundCheck : MonoBehaviour
 
     private void Start()
     {
-        defaultPos = transform.localPosition;
+        transform.localPosition = defaultPos;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

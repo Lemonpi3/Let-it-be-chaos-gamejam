@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ChaosManager : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class ChaosManager : MonoBehaviour
     #endregion
 
     //GeneralGameSettings
+
     [Header("Enemy Health")]
     //Enemy Stats                  //Inspector was showing this headers inversed
     [SerializeField, Header("Enemy Stats")]
@@ -107,6 +109,8 @@ public class ChaosManager : MonoBehaviour
     public static float medEnemySpeed =>instance.baseEnemySpeed* instance.medSpeedScaling;
     public static float bigEnemySpeed => instance.baseEnemySpeed * instance.bigSpeedScaling;
 
+    /*-----------------------------------------------------*/
+
     [Header("playerChaosRNG Values")]
     [SerializeField]
     private int[] _playerGravity_ChaosMod;
@@ -148,6 +152,8 @@ public class ChaosManager : MonoBehaviour
             return _playerJumpForce_ChaosMod[rng];
         }
     }
+
+    /*-----------------------------------------------------*/
 
     [Header("Weapons Chaos stuff")]
 
@@ -197,6 +203,8 @@ public class ChaosManager : MonoBehaviour
         }
     }
 
+    /*-----------------------------------------------------*/
+
     [Header("Chaos Settings")]
 
     [SerializeField]
@@ -208,6 +216,8 @@ public class ChaosManager : MonoBehaviour
     [SerializeField]
     private float ChaosUpdateInterval = 30;
 
+    /*-----------------------------------------------------*/
+
     [Header("Default values")]
     
     [SerializeField]
@@ -216,10 +226,20 @@ public class ChaosManager : MonoBehaviour
     public static int _chaosLevel =>instance.chaosLevelCurrent;
     public static int _chaosLevelMax => instance.chaosLevelMax;
     public static float _chaosUpdateInterval => instance.ChaosUpdateInterval;
-    
+
+    /*-----------------------For save System-------------------------*/
+    [HideInInspector]
+    public Player player;
+    [HideInInspector]
+    public int level;
+    [HideInInspector]
+    public bool[] bossesKilled = new bool[4];
+
 
     private void Start()
     {
+        level = SceneManager.GetActiveScene().buildIndex;
+        player = FindObjectOfType<Player>();
         InvokeRepeating("RandomizeChaos", 0, ChaosUpdateInterval);
     }
 
@@ -239,5 +259,10 @@ public class ChaosManager : MonoBehaviour
     {
         chaosLevelCurrent = defaultChaosLevel;
         RandomizeChaos();
+    }
+
+    public void SavePlayer(Player player)
+    {
+        SaveSystem.SavePlayer(player);
     }
 }

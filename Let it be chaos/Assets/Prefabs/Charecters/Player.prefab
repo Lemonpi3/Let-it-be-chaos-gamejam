@@ -70,8 +70,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c2cce772b1386541b7996b9c1aa8c10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isGrounded: 0
-  defaultPos: {x: 0, y: 0, z: 0}
+  isGrounded: 1
+  defaultPos: {x: 0, y: -0.81, z: 0}
 --- !u!1 &6239630900545799334
 GameObject:
   m_ObjectHideFlags: 0
@@ -329,6 +329,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 395830263381437002, guid: 7dcb8da3e1365004283a98947f158b14, type: 3}
+      propertyPath: weaponData
+      value: 
+      objectReference: {fileID: 11400000, guid: 6701ab7440930144eadbe4eeecebc1cf, type: 2}
     - target: {fileID: 395830263381437003, guid: 7dcb8da3e1365004283a98947f158b14, type: 3}
       propertyPath: m_Name
       value: Weapon1
@@ -402,6 +406,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 395830263381437002, guid: 7dcb8da3e1365004283a98947f158b14, type: 3}
+      propertyPath: weaponData
+      value: 
+      objectReference: {fileID: 11400000, guid: c31750a2ab48b694e8ff8139058cbe38, type: 2}
     - target: {fileID: 395830263381437003, guid: 7dcb8da3e1365004283a98947f158b14, type: 3}
       propertyPath: m_Name
       value: Weapon2

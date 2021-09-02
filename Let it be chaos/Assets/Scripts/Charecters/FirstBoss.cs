@@ -65,6 +65,7 @@ public class FirstBoss : Boss
         exitPortalGO.SetActive(true);
         bossChaosZone.SetActive(false);
         ChaosManager.instance.NewChaosLevel(chaosLevelModifierMin, chaosLevelModifierMax);
+        ChaosManager.instance.bossesKilled[0] = true;
         Destroy(gameObject);
     }
 

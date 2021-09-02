@@ -9,7 +9,6 @@ public class Player : Charecter
     [SerializeField]
     private Transform bulletSpawnpoint;
     
-    private Transform checkPoint;
     private int currentCheckpoint;
 
     public Weapon[] weapon;
@@ -21,8 +20,12 @@ public class Player : Charecter
     private StatusBar maxHpBar;
     [SerializeField]
     private LevelLoader levelLoader;
+    [SerializeField]
     private int currentWeapon = 0;
-
+    [SerializeField]
+    private GameObject pauseMenu;
+    [HideInInspector]
+    public int _currentHealth { get { return currentHealth; } set { currentHealth = _currentHealth; } }
 
     bool isShooting
     {
@@ -35,8 +38,8 @@ public class Player : Charecter
     protected override void Start()
     {
         base.Start();
+        Heal(maxHealth);
         UpdateStatusBars();
-        
     }
 
     private void FixedUpdate()
@@ -73,9 +76,9 @@ public class Player : Charecter
             weapon[currentWeapon].StopShooting();
             SwapWeapon();
         }
-        if (Input.GetKeyDown(KeyCode.K))
+        if (Input.GetButtonDown("Cancel"))
         {
-            FlipUpsideDown(groundCheck);
+            pauseMenu.SetActive(!pauseMenu.activeSelf);
         }
     }
 
@@ -155,14 +158,13 @@ public class Player : Charecter
     public override void Die()
     {
         SetCharecterDefaultStats();
-        levelLoader.ReloadLevel();
+        levelLoader.LoadSavedGame();
     }
 
-    public void SetCheckpoint(Transform _checkpoint,int checkpointIndex)
+    public void SetCheckpoint(int checkpointIndex)
     {
         if(checkpointIndex >= currentCheckpoint)
         {
-            checkPoint = _checkpoint;
             currentCheckpoint = checkpointIndex;
         }
     }

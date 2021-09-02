@@ -25,6 +25,14 @@ public class ChaosZone : MonoBehaviour
         }
     }
 
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Enemy" || collision.tag == "Player")
+        {
+            collision.GetComponent<Charecter>().ApplyChaosStats();
+        }
+    }
+
     public virtual void ChaosUpdate(Collider2D collision)
     {
         timer -= Time.deltaTime;
